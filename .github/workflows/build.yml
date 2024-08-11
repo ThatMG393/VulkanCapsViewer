@@ -209,8 +209,32 @@ jobs:
           export CXXFLAGS="$CFLAGS -fno-exceptions -fno-rtti"
           export LDFLAGS="-target ${ANDROID_LLVM_TRIPLE}21 --sysroot=${ANDROID_SYSROOT}"
           export ANDROID_TARGET_ARCH=armeabi-v7a
+          export PATH="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH"
+          export ANDROID_NDK_TOOLCHAIN_PREFIX="armv7a-linux-androideabi"
+          export ANDROID_NDK_TOOLCHAIN_VERSION="clang"
+          export ANDROID_NDK_HOST="linux-x86_64"
+          export ANDROID_NDK_PLATFORM="android-21"  # Adjust this if needed
+          export QMAKE_CC="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/$ANDROID_NDK_HOST/bin/${ANDROID_NDK_TOOLCHAIN_PREFIX}21-clang"
+          export QMAKE_CXX="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/$ANDROID_NDK_HOST/bin/${ANDROID_NDK_TOOLCHAIN_PREFIX}21-clang++"
+          export QMAKE_LINK="$QMAKE_CXX"
 
-          qmake vulkanCapsViewer.pro CONFIG+=android "ANDROID_ABIS=armeabi-v7a"
+          export ANDROID_USE_LLVM=1
+          export ANDROID_TOOLCHAIN_NAME="llvm"
+          export ANDROID_TOOLCHAIN_PREFIX=""
+
+          qmake vulkanCapsViewer.pro \
+             CONFIG+=android \
+             ANDROID_ABIS="armeabi-v7a" \
+             ANDROID_ARCHITECTURE="armeabi-v7a" \
+             ANDROID_TARGET_ARCH="armeabi-v7a" \
+             ANDROID_NDK_PLATFORM=$ANDROID_NDK_PLATFORM \
+             ANDROID_NDK_TOOLCHAIN_PREFIX=$ANDROID_NDK_TOOLCHAIN_PREFIX \
+             ANDROID_NDK_TOOLCHAIN_VERSION=$ANDROID_NDK_TOOLCHAIN_VERSION \
+             ANDROID_NDK_HOST=$ANDROID_NDK_HOST \
+             QMAKE_CC=$QMAKE_CC \
+             QMAKE_CXX=$QMAKE_CXX \
+             QMAKE_LINK=$QMAKE_LINK
+             
           make install INSTALL_ROOT=/home/runner/work/VulkanCapsViewer/VulkanCapsViewer/
           androiddeployqt --input /home/runner/work/VulkanCapsViewer/VulkanCapsViewer/android-vulkanCapsViewer-deployment-settings.json --output . --android-platform android-33 --gradle
        
