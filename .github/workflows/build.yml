@@ -200,7 +200,9 @@ jobs:
         run: |
           export ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/27.0.12077973
           export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
-          qmake vulkanCapsViewer.pro
+          export ANDROID_ABI="armeabi-v7a"
+
+          qmake vulkanCapsViewer.pro CONFIG+=android_arm "ANDROID_ABIS=armeabi-v7a"
           make install INSTALL_ROOT=/home/runner/work/VulkanCapsViewer/VulkanCapsViewer/
           androiddeployqt --input /home/runner/work/VulkanCapsViewer/VulkanCapsViewer/android-vulkanCapsViewer-deployment-settings.json --output . --android-platform android-33 --gradle
        
