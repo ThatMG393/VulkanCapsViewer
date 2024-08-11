@@ -201,11 +201,16 @@ jobs:
           export ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/27.0.12077973
           export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
           export ANDROID_ABI="armeabi-v7a"
+          export ANDROID_TOOLCHAIN_NAME="arm-linux-androideabi"
+          export ANDROID_TOOLCHAIN_PREFIX="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/${ANDROID_TOOLCHAIN_NAME}-"
+          export ANDROID_LLVM_TRIPLE="armv7a-linux-androideabi"
+          export ANDROID_SYSROOT="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
+          export CFLAGS="-target ${ANDROID_LLVM_TRIPLE}21 -fdata-sections -ffunction-sections -fstack-protector-strong -funwind-tables -no-canonical-prefixes --sysroot=${ANDROID_SYSROOT}"
+          export CXXFLAGS="$CFLAGS -fno-exceptions -fno-rtti"
+          export LDFLAGS="-target ${ANDROID_LLVM_TRIPLE}21 --sysroot=${ANDROID_SYSROOT}"
+          export ANDROID_TARGET_ARCH=armeabi-v7a
 
-          ls $ANDROID_NDK_ROOT/toolchains
-          ls $ANDROID_NDK_ROOT/toolchains/*/prebuilt/*
-
-          qmake vulkanCapsViewer.pro CONFIG+=android_arm "ANDROID_ABIS=armeabi-v7a"
+          qmake vulkanCapsViewer.pro CONFIG+=android "ANDROID_ABIS=armeabi-v7a"
           make install INSTALL_ROOT=/home/runner/work/VulkanCapsViewer/VulkanCapsViewer/
           androiddeployqt --input /home/runner/work/VulkanCapsViewer/VulkanCapsViewer/android-vulkanCapsViewer-deployment-settings.json --output . --android-platform android-33 --gradle
        
